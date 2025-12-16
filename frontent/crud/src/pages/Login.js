@@ -18,6 +18,8 @@ export function Login() {
           if(response.success === 1){
               alert("Login Successful");
               localStorage.setItem("isLogin", "true"); // after login success
+              localStorage.setItem("token", response.token); // Store the token
+              console.log("Token:", response.token); 
               navigate("/");
           } else {
               alert("Invalid email or password");

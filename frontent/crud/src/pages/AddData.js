@@ -72,7 +72,9 @@ export function AddData() {
                   fetch("http://localhost:8000/api/addData", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}` // Include the token in the header
+
                 },
                 body: JSON.stringify({
                     name: formData.name,

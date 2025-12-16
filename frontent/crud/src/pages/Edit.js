@@ -58,7 +58,8 @@ export function Edit() {
         fetch('http://localhost:8000/api/edit',{
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${localStorage.getItem("token")}` // Include the token in the header
             },
             body: JSON.stringify({
                 _id: edit._id,

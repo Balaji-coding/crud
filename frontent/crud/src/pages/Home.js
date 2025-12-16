@@ -11,7 +11,14 @@ export function Home() {
   const totalPages = Math.ceil(data.length / recordsPerPage);
 
   useEffect(() => {
-      fetch("http://localhost:8000/api/alldata").then((response) =>
+      fetch("http://localhost:8000/api/alldata",{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}` // Include the token in the header
+        }
+
+      }).then((response) =>
       response.json().then((data) => {
       setData(data);
       })
@@ -19,10 +26,13 @@ export function Home() {
   }, []);
 
     const deleteItem =(_id)=>{
+      const isConfirm = window.confirm("Are you sure you want to delete this item?");
+      if(!isConfirm)return;
       fetch("http://localhost:8000/api/delete",{
         method: "DELETE",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}` // Include the token in the header
         },
         body : JSON.stringify({
           _id: _id
@@ -31,7 +41,13 @@ export function Home() {
       .then(response => response.json())
       .then(data => {
         console.log("Deleted:", data);
-              fetch("http://localhost:8000/api/alldata").then((response) =>
+              fetch("http://localhost:8000/api/alldata",{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        }
+              }).then((response) =>
               response.json().then((data) => {
               setData(data);
               })
@@ -42,18 +58,30 @@ export function Home() {
   
     const logout = () => {
       localStorage.removeItem("isLogin");
+      localStorage.removeItem("token");
     window.location.reload();
     };
 
 
-    function handleSearch(e){
-      const searchingValue = e.target.value.toLowerCase();
-      const filteredData = data.filter((item) =>
-        item.name.toLowerCase().includes(searchingValue)
-      );
-      setCopy(filteredData);
-      console.log("Filtered Data:", filteredData);
-    }
+function handleSearch(e) {
+  const searchingValue = e.target.value.toLowerCase().trim();
+
+  if (!searchingValue) {
+    setCopy([]);
+    return;
+  }
+
+  const filteredData = data.filter(item =>
+    item.name.toLowerCase().includes(searchingValue)
+  );
+
+  setCopy(filteredData);
+
+  console.log("Filtered Data:", filteredData);
+  console.log("Searching Value:", searchingValue);
+  console.log("Default Data:", currentRecords);
+}
+
 
     return (
         <div>
